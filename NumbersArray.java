@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class NumbersArray {
 
@@ -21,7 +22,7 @@ public class NumbersArray {
     }
 
     // Write your methods here
-    public static int findMax(Integer[] arr){
+    public static Integer findMax(Integer[] arr){
         int result = arr[0];
 
         for (int i = 1; i < arr.length; i++){
@@ -33,43 +34,29 @@ public class NumbersArray {
         return result;
     }
 
-    public static int[] findDuplicates(Integer[] arr){
+    public static Integer[] findDuplicates(Integer[] arr){
 
         Set<Integer> seen = new HashSet<>();
 
-        int[] result = Arrays.stream(arr)
+        Integer[] result = Arrays.stream(arr)
                              .filter(n -> !seen.add(n))
-                             .mapToInt(Integer::intValue)
-                             .toArray();        
+                             .toArray(Integer[]::new);        
 
         return result;
     }
 
-    public static int[] findUnique(Integer[] arr){
-        
-        List<Integer> result = new ArrayList<>();
+    public static Integer[] findUnique(Integer[] arr) {
 
-        for (int i = 0; i < arr.length; i++){
-            boolean isUnique = true; 
+        Map<Integer, Long> counts = Arrays.stream(arr)
+                .collect(Collectors.groupingBy(
+                        n -> n,
+                        Collectors.counting()
+                ));
 
-            for (int j = 0; j < arr.length; j++){
-
-                if (i != j && arr[i].equals(arr[j])){
-                    isUnique = false;
-                    break;
-                }
-            }
-
-            if (isUnique){
-                int e = arr[i];
-                result.add(e);
-            }
-            
-        }
-
-        return result.stream().mapToInt(Integer::intValue).toArray();
-
-    }
+        return Arrays.stream(arr)
+                .filter(n -> counts.get(n) == 1)
+                .toArray(Integer[]::new);
+}
     
 }
 
